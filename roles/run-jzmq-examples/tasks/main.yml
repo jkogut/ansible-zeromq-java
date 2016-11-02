@@ -1,0 +1,29 @@
+---
+
+##
+## Run the examples of Java 0MQ from zguide
+##
+
+- name: Download zguide examples
+  git: repo={{zguide_repo}} dest={{zguide_path}} depth=1
+  
+- name: Compile Java examples
+  shell:
+    cd {{zguide_path}}/examples/Java;
+    javac -classpath  /usr/local/share/java/zmq.jar hwserver.java;
+    javac -classpath  /usr/local/share/java/zmq.jar hwclient.java;
+
+- name: Start hwserver
+  shell:
+    cd {{zguide_path}}/examples/Java;
+    nohup java -classpath '.:/usr/local/share/java/zmq.jar' -Djava.library.path=/usr/local/lib hwserver &
+
+- name: Connect with hwclient to hwserver
+  shell:
+    cd {{zguide_path}}/examples/Java;
+    java -classpath '.:/usr/local/share/java/zmq.jar' -Djava.library.path=/usr/local/lib hwclient
+  register: output
+- debug: var=output.stdout_lines  
+
+- name: Kill hwserver process
+  shell: "$(kill $(ps faxu | grep hwserver | grep -v grep| awk '{print $2}'))"

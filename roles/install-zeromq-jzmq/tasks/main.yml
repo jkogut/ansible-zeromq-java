@@ -1,0 +1,37 @@
+---
+
+##
+## Install 0MQ and compile Java bindings
+##
+
+- name: Install zeromq and mvn with yum
+  yum: name={{item}} state=present
+  with_items:
+    - zeromq
+    - zeromq-devel
+    - maven
+
+- name: Download jzmq from git repo
+  git: repo={{jzmq_repo}} dest={{jzmq_path}}
+  
+- name: Build jzmq
+  shell: cd {{jzmq_path}}/jzmq-jni; ./autogen.sh; ./configure; make; make install; cd ..; mvn package 
+
+- name: Create usrlocal.conf for ldconfig
+  file: path=/etc/ld.so.conf.d/usrlocal.conf state=touch
+      
+- name: Update /etc/ld.so.conf.d/usrlocal.conf
+  lineinfile:
+    line='/usr/local/lib'
+    state=present
+    dest=/etc/ld.so.conf.d/usrlocal.conf 
+        
+- name: Run ldconfig
+  shell: ldconfig
+
+- name: Check if jzmq is present
+  shell: ldconfig -p | grep jzmq
+  register: jzmq
+- assert:
+    that:
+      - "'jzmq' in jzmq.stdout"

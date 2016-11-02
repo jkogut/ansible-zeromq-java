@@ -1,0 +1,24 @@
+---
+
+########## JAVA ZEROMQ INSTALL PLAYBOOK ##############
+## 1. Install zeromq
+## 2. Download java zeromq bindings 
+## 3. Configure, compile and install java zeromq
+## 4. Create ld.conf.zeromq 
+## 5. Update ldconfig
+## 6. Download zguide examples
+## 7. Compile and run Java 0MQ examples
+##################################################################
+
+- hosts: flink-masters
+  user: ansible
+  sudo: yes
+  vars:
+    jzmq_repo: https://github.com/zeromq/jzmq
+    jzmq_path: /opt/jzmq
+    zguide_repo: https://github.com/imatix/zguide.git
+    zguide_path: /tmp/zguide   
+
+  roles:
+    - install-zeromq-jzmq
+    - run-jzmq-examples

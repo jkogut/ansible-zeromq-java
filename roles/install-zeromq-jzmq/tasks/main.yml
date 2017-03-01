@@ -15,7 +15,12 @@
   git: repo={{jzmq_repo}} dest={{jzmq_path}}
   
 - name: Build jzmq
-  shell: cd {{jzmq_path}}/jzmq-jni; ./autogen.sh; ./configure; make; make install; cd ..; mvn package 
+  shell:
+    cd {{jzmq_path}}/jzmq-jni;
+    ./autogen.sh; ./configure;
+    make;
+    make install;
+    cd ..; mvn package 
 
 - name: Create usrlocal.conf for ldconfig
   file: path=/etc/ld.so.conf.d/usrlocal.conf state=touch

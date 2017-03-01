@@ -10,9 +10,9 @@
 ## 7. Compile and run Java 0MQ examples
 ##################################################################
 
-- hosts: flink-masters
-  user: ansible
-  sudo: yes
+- hosts: your_servers
+  become: true
+
   vars:
     jzmq_repo: https://github.com/zeromq/jzmq
     jzmq_path: /opt/jzmq
